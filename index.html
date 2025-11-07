@@ -1,0 +1,396 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FDA Compliance AI - 510(k) Analyzer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="main-container">
+        <!-- Navbar -->
+        <nav class="navbar navbar-dark">
+            <div class="container">
+                <span class="navbar-brand mb-0 h1">
+                    <i class="fas fa-file-medical"></i> FDA Compliance AI
+                </span>
+                <span class="text-white"><i class="fas fa-shield-alt"></i> 510(k) Document Analyzer</span>
+            </div>
+        </nav>
+
+        <div class="container pb-5">
+            <!-- Upload View -->
+            <div id="uploadView">
+                <!-- Hero Section -->
+                <div class="hero-section">
+                    <div class="row align-items-center">
+                        <div class="col-lg-7">
+                            <h1 class="display-4 mb-4"><strong>Accelerate Your FDA Submission</strong></h1>
+                            <p class="lead mb-4">AI-powered compliance checking for 510(k) submissions. Get instant feedback in minutes, not weeks. Save thousands in consultant fees.</p>
+                            <div class="row mt-4">
+                                <div class="col-md-4 mb-3">
+                                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                                    <h5>60 Second Analysis</h5>
+                                    <p class="text-muted">Instant compliance checking</p>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="feature-icon"><i class="fas fa-dollar-sign"></i></div>
+                                    <h5>80% Cost Savings</h5>
+                                    <p class="text-muted">$499 vs $15,000 consultants</p>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
+                                    <h5>FDA Compliant</h5>
+                                    <p class="text-muted">Based on official guidance</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="upload-card">
+                                <h3 class="text-center mb-4">Upload Your 510(k) Document</h3>
+                                
+                                <div class="upload-zone" id="uploadZone">
+                                    <i class="fas fa-cloud-upload-alt fa-4x text-primary mb-3"></i>
+                                    <h5>Drag & Drop your PDF here</h5>
+                                    <p class="text-muted mb-3">or click to browse</p>
+                                    <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                                    <button class="btn btn-outline-primary" onclick="document.getElementById('fileInput').click()">
+                                        <i class="fas fa-folder-open"></i> Select File
+                                    </button>
+                                    <p class="text-muted mt-3 small">Maximum file size: 16MB | PDF only</p>
+                                </div>
+
+                                <div id="fileInfo" class="mt-3" style="display: none;">
+                                    <div class="alert alert-success">
+                                        <i class="fas fa-file-pdf"></i> <span id="fileName"></span>
+                                        <button class="btn btn-sm btn-link float-end" onclick="clearFile()">Remove</button>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary w-100 mt-4" id="analyzeBtn" disabled onclick="showDemo()">
+                                    <i class="fas fa-search"></i> Analyze Document
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loadingState" class="text-center mt-5" style="display: none;">
+                    <div class="upload-card">
+                        <div class="spinner-border text-primary loading-spinner" style="width: 4rem; height: 4rem;" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h4 class="mt-4">Analyzing your document...</h4>
+                        <p class="text-muted" id="loadingMessage">Extracting document sections...</p>
+                        <div class="progress-bar-custom mt-3">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results View -->
+            <div id="resultsView" style="display: none;">
+                <div class="mt-4">
+                    <!-- Statistics Row -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card">
+                                <i class="fas fa-list-check fa-2x text-primary mb-2"></i>
+                                <h3 class="text-primary">4/6</h3>
+                                <p class="text-muted mb-0">Sections Found</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card">
+                                <i class="fas fa-percentage fa-2x text-success mb-2"></i>
+                                <h3 class="text-success">66.7%</h3>
+                                <p class="text-muted mb-0">Completeness</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card">
+                                <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
+                                <h3 class="text-danger">2</h3>
+                                <p class="text-muted mb-0">Critical Issues</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card">
+                                <i class="fas fa-clock fa-2x text-info mb-2"></i>
+                                <h3 class="text-info">47s</h3>
+                                <p class="text-muted mb-0">Analysis Time</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Overall Score Card -->
+                    <div class="card shadow-lg mb-4" style="border: none; border-radius: 20px;">
+                        <div class="card-body p-5">
+                            <h3 class="card-title mb-4"><i class="fas fa-chart-line"></i> Compliance Report</h3>
+                            <div class="row align-items-center">
+                                <div class="col-md-4 text-center">
+                                    <div class="score-circle medium-score">
+                                        <span>62</span>
+                                    </div>
+                                    <p class="mt-3 mb-0"><strong>Overall Compliance Score</strong></p>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="summary-card">
+                                        <h5><i class="fas fa-clipboard-check"></i> Executive Summary</h5>
+                                        <p class="mb-3">Your submission needs improvements. Focus on the highlighted sections. Critical gaps identified in Substantial Equivalence and Biocompatibility sections.</p>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <strong><i class="fas fa-tools"></i> Estimated Work:</strong> 4 hours
+                                            </div>
+                                            <div class="col-6">
+                                                <strong><i class="fas fa-calendar-alt"></i> Target Date:</strong> Nov 24, 2024
+                                            </div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <strong><i class="fas fa-flag"></i> Priority Actions:</strong>
+                                            <ul class="mt-2">
+                                                <li>Complete Substantial Equivalence section</li>
+                                                <li>Add Biocompatibility testing data</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section-by-Section Analysis -->
+                    <div class="card shadow-lg mb-4" style="border: none; border-radius: 20px;">
+                        <div class="card-body p-5">
+                            <h3 class="card-title mb-4"><i class="fas fa-list"></i> Section-by-Section Analysis</h3>
+                            
+                            <!-- Section 1: Device Description - LOW severity -->
+                            <div class="section-card low">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="mb-0"><i class="fas fa-heartbeat"></i> Device Description</h5>
+                                    <div>
+                                        <span class="badge bg-info">Score: 85/100</span>
+                                        <span class="badge bg-success ms-2">LOW</span>
+                                    </div>
+                                </div>
+                                <p class="text-muted mb-2">Section is well-documented with comprehensive device specifications. Minor improvements can enhance clarity on technical specifications.</p>
+                                <div class="mt-3">
+                                    <strong><i class="fas fa-lightbulb"></i> Recommendations:</strong>
+                                    <ul class="suggestions-list">
+                                        <li>Add more detail on materials composition (specific polymers used)</li>
+                                        <li>Include dimensional specifications with tolerances</li>
+                                        <li>Reference applicable ISO standards for device classification</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Section 2: Intended Use - LOW severity -->
+                            <div class="section-card low">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="mb-0"><i class="fas fa-bullseye"></i> Intended Use</h5>
+                                    <div>
+                                        <span class="badge bg-info">Score: 92/100</span>
+                                        <span class="badge bg-success ms-2">LOW</span>
+                                    </div>
+                                </div>
+                                <p class="text-muted mb-2">Excellent description of intended use and indications. Clear patient population definition and usage scenarios provided.</p>
+                                <div class="mt-3">
+                                    <strong><i class="fas fa-lightbulb"></i> Recommendations:</strong>
+                                    <ul class="suggestions-list">
+                                        <li>Consider adding contraindications section</li>
+                                        <li>Specify age range for intended patient population</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Section 3: Substantial Equivalence - CRITICAL -->
+                            <div class="section-card critical">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="mb-0"><i class="fas fa-balance-scale"></i> Substantial Equivalence</h5>
+                                    <div>
+                                        <span class="badge bg-danger">MISSING</span>
+                                        <span class="badge bg-danger ms-2">CRITICAL</span>
+                                    </div>
+                                </div>
+                                <p class="text-muted mb-2"><strong>CRITICAL:</strong> Substantial Equivalence section is completely missing from your document. This is a required section per 21 CFR 807.87.</p>
+                                <div class="alert alert-danger mt-3">
+                                    <i class="fas fa-exclamation-circle"></i> <strong>FDA Requirement:</strong> You must demonstrate substantial equivalence to a legally marketed predicate device.
+                                </div>
+                                <div class="mt-3">
+                                    <strong><i class="fas fa-tasks"></i> Required Actions:</strong>
+                                    <ul class="suggestions-list">
+                                        <li><strong>Identify predicate device:</strong> Find a legally marketed device with same intended use</li>
+                                        <li><strong>Comparison table:</strong> Create side-by-side comparison of technological characteristics</li>
+                                        <li><strong>Performance data:</strong> Demonstrate equivalent or better performance compared to predicate</li>
+                                        <li><strong>Cite predicate 510(k):</strong> Include predicate K-number and clearance date</li>
+                                        <li>Review FDA guidance: "The 510(k) Program: Evaluating Substantial Equivalence"</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Section 4: Performance Testing - MEDIUM -->
+                            <div class="section-card medium">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="mb-0"><i class="fas fa-flask"></i> Performance Testing</h5>
+                                    <div>
+                                        <span class="badge bg-info">Score: 58/100</span>
+                                        <span class="badge bg-info ms-2">MEDIUM</span>
+                                    </div>
+                                </div>
+                                <p class="text-muted mb-2">Basic testing data provided but missing several critical test protocols. Bench testing results incomplete.</p>
+                                <div class="mt-3">
+                                    <strong><i class="fas fa-lightbulb"></i> Recommendations:</strong>
+                                    <ul class="suggestions-list">
+                                        <li>Add shelf-life testing data (accelerated aging per ASTM F1980)</li>
+                                        <li>Include sterilization validation protocol and results</li>
+                                        <li>Add mechanical durability testing (fatigue, stress testing)</li>
+                                        <li>Provide statistical analysis of test results (mean, SD, confidence intervals)</li>
+                                        <li>Reference applicable consensus standards (ISO 10993, ISO 14971)</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Section 5: Labeling - LOW -->
+                            <div class="section-card low">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="mb-0"><i class="fas fa-tag"></i> Labeling</h5>
+                                    <div>
+                                        <span class="badge bg-info">Score: 78/100</span>
+                                        <span class="badge bg-success ms-2">LOW</span>
+                                    </div>
+                                </div>
+                                <p class="text-muted mb-2">Labeling section adequately addresses key requirements. Instructions for use and warnings are present.</p>
+                                <div class="mt-3">
+                                    <strong><i class="fas fa-lightbulb"></i> Recommendations:</strong>
+                                    <ul class="suggestions-list">
+                                        <li>Ensure all warnings comply with 21 CFR 801 requirements</li>
+                                        <li>Add storage conditions and expiration dating to label</li>
+                                        <li>Include symbols explanation per ISO 15223-1</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Section 6: Biocompatibility - CRITICAL -->
+                            <div class="section-card critical">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="mb-0"><i class="fas fa-microscope"></i> Biocompatibility</h5>
+                                    <div>
+                                        <span class="badge bg-danger">MISSING</span>
+                                        <span class="badge bg-danger ms-2">CRITICAL</span>
+                                    </div>
+                                </div>
+                                <p class="text-muted mb-2"><strong>CRITICAL:</strong> Biocompatibility section is missing. For devices with patient contact, this is required per ISO 10993-1.</p>
+                                <div class="alert alert-danger mt-3">
+                                    <i class="fas fa-exclamation-circle"></i> <strong>FDA Requirement:</strong> Biocompatibility evaluation required for all devices with direct or indirect patient contact.
+                                </div>
+                                <div class="mt-3">
+                                    <strong><i class="fas fa-tasks"></i> Required Actions:</strong>
+                                    <ul class="suggestions-list">
+                                        <li><strong>Risk assessment:</strong> Conduct biological evaluation per ISO 10993-1</li>
+                                        <li><strong>Testing required:</strong> Cytotoxicity, sensitization, irritation (minimum for limited contact)</li>
+                                        <li><strong>Extended contact:</strong> If >24 hours contact, add systemic toxicity, genotoxicity testing</li>
+                                        <li><strong>Material characterization:</strong> Provide chemical characterization of patient-contacting materials</li>
+                                        <li>Review FDA guidance: "Use of ISO 10993-1 for Medical Devices"</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="text-center mb-5">
+                        <button class="btn btn-outline-primary btn-lg me-3" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print Report
+                        </button>
+                        <button class="btn btn-outline-secondary btn-lg me-3">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
+                        <button class="btn btn-primary btn-lg" onclick="resetDemo()">
+                            <i class="fas fa-redo"></i> Analyze Another Document
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="py-4 mt-5">
+            <div class="container text-center">
+                <p class="mb-2">FDA Compliance AI - Accelerating Medical Device Innovation</p>
+                <p class="mb-0 small">MS Biotech Capstone Project | Yeshiva University | Built with AI & Passion</p>
+            </div>
+        </footer>
+    </div>
+
+  <!-- Chat Widget -->
+    <div class="chat-widget">
+        <button class="chat-button" id="chatButton" onclick="toggleChat()">
+            <i class="fas fa-comment-medical"></i>
+        </button>
+        
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-header">
+                <div>
+                    <h5><i class="fas fa-robot"></i> FDA Compliance Assistant</h5>
+                    <small>Ask me anything about 510(k)</small>
+                </div>
+                <button class="chat-close" onclick="toggleChat()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot">
+                    <div class="chat-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        Hi! I'm your FDA Compliance Assistant. I can help you with:
+                        <ul class="mt-2 mb-0" style="padding-left: 20px;">
+                            <li>510(k) submission requirements</li>
+                            <li>Section-specific guidance</li>
+                            <li>FDA regulations</li>
+                            <li>Common rejection reasons</li>
+                        </ul>
+                        What would you like to know?
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-questions" id="quickQuestions">
+                <small class="text-muted">Quick Questions:</small>
+                <button class="quick-question-btn" onclick="askQuestion('What are the main sections of a 510(k)?')">
+                    What are the main sections of a 510(k)?
+                </button>
+                <button class="quick-question-btn" onclick="askQuestion('What is substantial equivalence?')">
+                    What is substantial equivalence?
+                </button>
+                <button class="quick-question-btn" onclick="askQuestion('What causes 510(k) rejections?')">
+                    What causes 510(k) rejections?
+                </button>
+            </div>
+
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <input 
+                        type="text" 
+                        class="chat-input" 
+                        id="chatInput" 
+                        placeholder="Ask about FDA compliance..."
+                        onkeypress="handleChatKeyPress(event)"
+                    >
+                    <button class="chat-send-btn" id="chatSendBtn" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+    </body>
+</html>
