@@ -115,9 +115,9 @@ export default function ResultsView({ onReset, file }) {
 
             <div>
               <p className="font-bold text-sm mb-2">🎯 Priority Actions:</p>
-              <ul className="space-y-1">
+              <ul className="space-y-1 text-left">
                 {complianceData.summaryData.priorityActions.map((action, idx) => (
-                  <li key={idx} className="text-sm">• {action}</li>
+                  <li key={idx} className="text-sm ml-0">• {action}</li>
                 ))}
               </ul>
             </div>
@@ -137,7 +137,7 @@ export default function ResultsView({ onReset, file }) {
             <div key={idx}>
               <button
                 onClick={() => toggleSection(section.title)}
-                className="w-full"
+                className="w-full text-left"
               >
                 <SectionCard
                   icon={section.icon}
