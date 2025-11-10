@@ -8,7 +8,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2 text-white text-xl font-bold">
             <FileText className="w-6 h-6" />
-            <span>FDA Compliance AI</span>
+            <span>RegComply AI</span>
           </div>
           <div className="flex items-center space-x-2 text-white">
             <Shield className="w-5 h-5" />
