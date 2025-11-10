@@ -2,7 +2,7 @@
 
 ## Overview
 
-RegComply AI is a React-based application that provides instant AI-powered compliance analysis for FDA 510(k) medical device submissions.
+RegComply AI is a Ai platform that provides instant AI-powered compliance analysis for FDA 510(k) medical device submissions.
 
 ## Features
 
