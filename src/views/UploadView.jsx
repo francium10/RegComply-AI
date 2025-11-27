@@ -1,9 +1,10 @@
+// src/views/UploadView.jsx
 import React, { useState } from 'react';
-import { Zap, DollarSign, CheckCircle } from 'lucide-react';
+import { Zap, DollarSign, CheckCircle, ClipboardList } from 'lucide-react';
 import FileUploadZone from '../components/FileUploadZone';
 import FeatureCard from '../components/FeatureCard';
 
-export default function UploadView({ onAnalyze }) {
+export default function UploadView({ onAnalyze, onGoToProfile }) {
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileSelect = (file) => {
@@ -75,6 +76,25 @@ export default function UploadView({ onAnalyze }) {
               <span>🔍</span>
               <span>Analyze Document</span>
             </button>
+
+            {/* Divider with "OR" */}
+            <div className="flex items-center my-6">
+              <div className="flex-1 border-t border-gray-300"></div>
+              <span className="px-4 text-gray-500 text-sm font-medium">OR</span>
+              <div className="flex-1 border-t border-gray-300"></div>
+            </div>
+
+            {/* Build Profile Button (NEW) */}
+            <button
+              onClick={onGoToProfile}
+              className="w-full py-3 rounded-lg font-bold transition-all flex items-center justify-center space-x-2 border-2 border-purple-600 text-purple-600 hover:bg-purple-50"
+            >
+              <ClipboardList className="w-5 h-5" />
+              <span>Build Device Profile</span>
+            </button>
+            <p className="text-center text-gray-500 text-sm mt-2">
+              Don't have a PDF? Use our structured template instead.
+            </p>
           </div>
         </div>
       </div>

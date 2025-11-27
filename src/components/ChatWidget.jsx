@@ -1,6 +1,7 @@
+// src/components/ChatWidget.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send } from 'lucide-react';
-import { getBotResponse } from '../utils/chatResponses';
+import { sendChatMessage } from '../services/api';
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,12 +28,13 @@ export default function ChatWidget() {
     }
   }, [isOpen]);
 
-  const handleSendMessage = async () => {
-    if (!input.trim()) return;
+  // Function to send a message (used by both input and quick questions)
+  const sendMessage = async (messageText) => {
+    if (!messageText.trim()) return;
 
     const userMessage = {
       id: messages.length + 1,
-      text: input,
+      text: messageText,
       sender: 'user'
     };
 
@@ -40,16 +42,28 @@ export default function ChatWidget() {
     setInput('');
     setIsLoading(true);
 
-    // Simulate API call delay
-    setTimeout(() => {
-      const botResponse = getBotResponse(input);
+    try {
+      // Call REAL backend API!
+      const botResponse = await sendChatMessage(messageText);
+      
       setMessages(prev => [...prev, {
         id: prev.length + 1,
         text: botResponse,
         sender: 'bot'
       }]);
+    } catch (error) {
+      setMessages(prev => [...prev, {
+        id: prev.length + 1,
+        text: 'Sorry, I encountered an error. Please try again.',
+        sender: 'bot'
+      }]);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    await sendMessage(input);
   };
 
   const quickQuestions = [
@@ -132,27 +146,7 @@ export default function ChatWidget() {
                 {quickQuestions.map((q, idx) => (
                   <button
                     key={idx}
-                    onClick={() => {
-                      setInput(q);
-                      // Auto send after slight delay
-                      setTimeout(() => {
-                        setInput(q);
-                        // Trigger send
-                        const userMsg = { id: messages.length + 1, text: q, sender: 'user' };
-                        setMessages(prev => [...prev, userMsg]);
-                        setInput('');
-                        setIsLoading(true);
-                        setTimeout(() => {
-                          const botResp = getBotResponse(q);
-                          setMessages(prev => [...prev, {
-                            id: prev.length + 1,
-                            text: botResp,
-                            sender: 'bot'
-                          }]);
-                          setIsLoading(false);
-                        }, 1000);
-                      }, 100);
-                    }}
+                    onClick={() => sendMessage(q)}
                     className="w-full text-left text-xs bg-gray-100 hover:bg-gray-200 p-2 rounded transition text-gray-700"
                   >
                     {q}

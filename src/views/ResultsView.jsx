@@ -1,11 +1,40 @@
 import React, { useState } from 'react';
-import { Download, Printer, RotateCcw, CheckCircle, Percent, AlertTriangle, Clock } from 'lucide-react';
+import { 
+  Download, Printer, RotateCcw, CheckCircle, Percent, AlertTriangle, Clock,
+  FileText, Users, Shield, Wrench, BookOpen, Activity, Target, HelpCircle
+} from 'lucide-react';
 import StatCard from '../components/StatCard';
 import SectionCard from '../components/SectionCard';
-import { complianceData } from '../utils/mockData';
 
-export default function ResultsView({ onReset, file }) {
-  const [expandedSections, setExpandedSections] = useState(['Substantial Equivalence', 'Biocompatibility']);
+
+  export default function ResultsView({ onReset, file, results }) {
+  // Use results from backend instead of hardcoded data
+  const data = results || {};
+  
+  // State for tracking expanded sections
+  const [expandedSections, setExpandedSections] = useState([]);
+
+  // Icon mapper - converts string icon names from backend to React components
+  const iconMap = {
+    'FileText': FileText,
+    'Users': Users,
+    'Shield': Shield,
+    'Wrench': Wrench,
+    'BookOpen': BookOpen,
+    'Activity': Activity,
+    'Target': Target,
+    'AlertTriangle': AlertTriangle,
+    'CheckCircle': CheckCircle,
+    'HelpCircle': HelpCircle,
+  };
+
+  // Helper function to get icon component from string name
+  const getIcon = (iconName) => {
+    // If iconName is already a component (for fallback data), return it
+    if (typeof iconName === 'function') return iconName;
+    // Otherwise, look it up in the map, default to FileText
+    return iconMap[iconName] || FileText;
+  };
 
   const toggleSection = (title) => {
     setExpandedSections(prev =>
@@ -29,25 +58,25 @@ export default function ResultsView({ onReset, file }) {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
         <StatCard
           icon={CheckCircle}
-          value={complianceData.sectionsFound}
+          value={data.sectionsFound}
           label="Sections Found"
           color="blue"
         />
         <StatCard
           icon={Percent}
-          value={complianceData.completeness}
+          value={data.completeness}
           label="Completeness"
           color="green"
         />
         <StatCard
           icon={AlertTriangle}
-          value={complianceData.criticalIssues}
+          value={data.criticalIssues}
           label="Critical Issues"
           color="red"
         />
         <StatCard
           icon={Clock}
-          value={complianceData.analysisTime}
+          value={data.analysisTime}
           label="Analysis Time"
           color="cyan"
         />
@@ -75,7 +104,7 @@ export default function ResultsView({ onReset, file }) {
                   fill="none"
                   stroke="url(#gradient)"
                   strokeWidth="12"
-                  strokeDasharray={`${(complianceData.overallScore / 100) * 565.48} 565.48`}
+                  strokeDasharray={`${(data.overallScore / 100) * 565.48} 565.48`}
                   strokeLinecap="round"
                 />
                 <defs>
@@ -87,7 +116,7 @@ export default function ResultsView({ onReset, file }) {
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <p className="text-5xl font-bold text-purple-600">{complianceData.overallScore}</p>
+                  <p className="text-5xl font-bold text-purple-600">{data.overallScore}</p>
                   <p className="text-sm text-gray-600 mt-1">Overall Score</p>
                 </div>
               </div>
@@ -100,23 +129,23 @@ export default function ResultsView({ onReset, file }) {
               <span>✓</span>
               <span>Executive Summary</span>
             </h5>
-            <p className="mb-4 leading-relaxed">{complianceData.summaryData.details}</p>
+            <p className="mb-4 leading-relaxed">{data.summaryData?.details}</p>
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
                 <p className="text-sm text-purple-200">Estimated Work</p>
-                <p className="font-bold text-lg">⚙️ {complianceData.summaryData.estimatedWork}</p>
+                <p className="font-bold text-lg">⚙️ {data.summaryData?.estimatedWork}</p>
               </div>
               <div>
                 <p className="text-sm text-purple-200">Target Date</p>
-                <p className="font-bold text-lg">📅 {complianceData.summaryData.targetDate}</p>
+                <p className="font-bold text-lg">📅 {data.summaryData?.targetDate}</p>
               </div>
             </div>
 
             <div>
               <p className="font-bold text-sm mb-2">🎯 Priority Actions:</p>
               <ul className="space-y-1 text-left">
-                {complianceData.summaryData.priorityActions.map((action, idx) => (
+                {data.summaryData?.priorityActions?.map((action, idx) => (
                   <li key={idx} className="text-sm ml-0">• {action}</li>
                 ))}
               </ul>
@@ -133,14 +162,14 @@ export default function ResultsView({ onReset, file }) {
         </h3>
 
         <div className="space-y-2">
-          {complianceData.sections.map((section, idx) => (
+          {data.sections?.map((section, idx) => (
             <div key={idx}>
               <button
                 onClick={() => toggleSection(section.title)}
                 className="w-full text-left"
               >
                 <SectionCard
-                  icon={section.icon}
+                  icon={getIcon(section.icon)}
                   title={section.title}
                   score={section.score}
                   severity={section.severity}

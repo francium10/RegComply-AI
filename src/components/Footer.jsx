@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 text-center">
         <p className="mb-2 font-semibold">FDA Regulatory Compliance AI - Accelerating Medical Device Innovation</p>
         <p className="text-sm text-purple-200">
-          Built By Francis With Love and & Advanced AI | Founder of RegComply Ai
+          &copy; {new Date().getFullYear()} FDA Regulatory Compliance AI. All rights reserved.
         </p>
       </div>
     </footer>
