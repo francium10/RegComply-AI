@@ -1,24 +1,13 @@
 // src/views/PricingPage.jsx
 import React, { useState } from 'react';
 import { 
-  Check, 
-  X, 
-  Zap, 
-  Building2, 
-  Rocket,
-  ArrowLeft,
-  FileText,
-  MessageSquare,
-  Download,
-  Clock,
-  Shield,
-  Users,
-  Headphones,
-  Star
+  Check, X, Zap, Building2, Rocket, ArrowLeft, FileText, 
+  Shield, Users, Headphones, Star, ChevronDown, ChevronUp
 } from 'lucide-react';
 
 export default function PricingPage({ onBack, onSelectPlan, isAuthenticated }) {
-  const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' or 'annual'
+  const [billingCycle, setBillingCycle] = useState('monthly');
+  const [openFaq, setOpenFaq] = useState(null);
 
   const plans = [
     {
@@ -53,7 +42,7 @@ export default function PricingPage({ onBack, onSelectPlan, isAuthenticated }) {
       color: 'purple',
       monthlyPrice: 499,
       annualPrice: 399,
-      priceLabel: null, // Will show calculated price
+      priceLabel: null,
       priceSubtext: 'per month',
       cta: 'Start Pro Trial',
       ctaStyle: 'solid',
@@ -95,12 +84,32 @@ export default function PricingPage({ onBack, onSelectPlan, isAuthenticated }) {
     },
   ];
 
+  const faqs = [
+    {
+      question: 'What counts as one document analysis?',
+      answer: 'Each PDF upload or Profile Builder submission counts as one analysis. You\'ll receive a comprehensive compliance report for each analysis.'
+    },
+    {
+      question: 'Can I upgrade or downgrade my plan?',
+      answer: 'Yes! You can change your plan at any time. When upgrading, you\'ll get immediate access to new features. When downgrading, changes take effect at your next billing cycle.'
+    },
+    {
+      question: 'Do unused analyses roll over?',
+      answer: 'Monthly analyses don\'t roll over, but you can purchase additional analysis credits at any time at a discounted rate.'
+    },
+    {
+      question: 'Is my data secure?',
+      answer: 'Absolutely. We use bank-level encryption, and your documents are processed securely and deleted after analysis. We never share your data with third parties.'
+    },
+    {
+      question: 'What payment methods do you accept?',
+      answer: 'We accept all major credit cards (Visa, MasterCard, American Express) and can arrange invoicing for Enterprise customers.'
+    },
+  ];
+
   const handleSelectPlan = (planId) => {
     if (onSelectPlan) {
       onSelectPlan(planId, billingCycle);
-    } else {
-      // Default behavior - could redirect to signup
-      console.log(`Selected plan: ${planId}, billing: ${billingCycle}`);
     }
   };
 
@@ -112,43 +121,39 @@ export default function PricingPage({ onBack, onSelectPlan, isAuthenticated }) {
 
   const getSavings = (plan) => {
     if (plan.monthlyPrice === 0) return null;
-    const monthlyCost = plan.monthlyPrice * 12;
-    const annualCost = plan.annualPrice * 12;
-    const savings = monthlyCost - annualCost;
-    return savings;
+    return (plan.monthlyPrice - plan.annualPrice) * 12;
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-white">
-      {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50">
+      <div className="max-w-7xl mx-auto px-4 py-8 md:py-12">
         {/* Back Button */}
         {onBack && (
           <button
             onClick={onBack}
-            className="flex items-center space-x-2 text-gray-600 hover:text-purple-600 mb-8 transition"
+            className="group flex items-center space-x-2 text-gray-600 hover:text-purple-600 mb-8 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Back</span>
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="font-medium">Back</span>
           </button>
         )}
 
         {/* Title Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
             Simple, Transparent Pricing
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
             Choose the plan that fits your needs. Save up to 20% with annual billing.
           </p>
 
           {/* Billing Toggle */}
-          <div className="mt-8 inline-flex items-center bg-gray-100 rounded-full p-1">
+          <div className="mt-8 inline-flex items-center bg-gray-100 rounded-full p-1.5">
             <button
               onClick={() => setBillingCycle('monthly')}
-              className={`px-6 py-2 rounded-full text-sm font-semibold transition ${
+              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
                 billingCycle === 'monthly'
-                  ? 'bg-white text-purple-600 shadow'
+                  ? 'bg-white text-purple-600 shadow-md'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -156,22 +161,22 @@ export default function PricingPage({ onBack, onSelectPlan, isAuthenticated }) {
             </button>
             <button
               onClick={() => setBillingCycle('annual')}
-              className={`px-6 py-2 rounded-full text-sm font-semibold transition flex items-center space-x-2 ${
+              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all flex items-center space-x-2 ${
                 billingCycle === 'annual'
-                  ? 'bg-white text-purple-600 shadow'
+                  ? 'bg-white text-purple-600 shadow-md'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               <span>Annual</span>
-              <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">
-                Save 20%
+              <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-bold">
+                -20%
               </span>
             </button>
           </div>
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto mb-16">
           {plans.map((plan) => {
             const Icon = plan.icon;
             const savings = getSavings(plan);
@@ -179,13 +184,13 @@ export default function PricingPage({ onBack, onSelectPlan, isAuthenticated }) {
             return (
               <div
                 key={plan.id}
-                className={`relative bg-white rounded-2xl shadow-lg overflow-hidden transition-transform hover:scale-105 ${
-                  plan.popular ? 'ring-2 ring-purple-600' : ''
+                className={`relative bg-white rounded-3xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${
+                  plan.popular ? 'ring-2 ring-purple-500' : ''
                 }`}
               >
                 {/* Popular Badge */}
                 {plan.popular && (
-                  <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-purple-600 to-purple-800 text-white text-center py-2 text-sm font-semibold">
+                  <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-purple-600 to-indigo-700 text-white text-center py-2.5 text-sm font-bold">
                     <div className="flex items-center justify-center space-x-1">
                       <Star className="w-4 h-4 fill-current" />
                       <span>Most Popular</span>
@@ -193,15 +198,15 @@ export default function PricingPage({ onBack, onSelectPlan, isAuthenticated }) {
                   </div>
                 )}
 
-                <div className={`p-8 ${plan.popular ? 'pt-14' : ''}`}>
+                <div className={`p-6 md:p-8 ${plan.popular ? 'pt-14' : ''}`}>
                   {/* Plan Header */}
                   <div className="flex items-center space-x-3 mb-4">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                      plan.color === 'purple' ? 'bg-purple-100' : 'bg-indigo-100'
-                    }`}>
-                      <Icon className={`w-6 h-6 ${
-                        plan.color === 'purple' ? 'text-purple-600' : 'text-indigo-600'
-                      }`} />
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${
+                      plan.color === 'purple' 
+                        ? 'from-purple-500 to-indigo-600 shadow-purple-500/30' 
+                        : 'from-indigo-500 to-blue-600 shadow-indigo-500/30'
+                    } shadow-lg`}>
+                      <Icon className="w-6 h-6 text-white" />
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-900">{plan.name}</h3>
@@ -212,15 +217,11 @@ export default function PricingPage({ onBack, onSelectPlan, isAuthenticated }) {
                   {/* Price */}
                   <div className="mb-6">
                     <div className="flex items-baseline space-x-2">
-                      <span className="text-4xl font-bold text-gray-900">
-                        {getPrice(plan)}
-                      </span>
-                      <span className="text-gray-500">
-                        {plan.priceSubtext}
-                      </span>
+                      <span className="text-4xl font-bold text-gray-900">{getPrice(plan)}</span>
+                      <span className="text-gray-500">{plan.priceSubtext}</span>
                     </div>
                     {billingCycle === 'annual' && savings > 0 && (
-                      <p className="text-green-600 text-sm mt-1">
+                      <p className="text-green-600 text-sm font-medium mt-1">
                         Save ${savings}/year
                       </p>
                     )}
@@ -229,25 +230,29 @@ export default function PricingPage({ onBack, onSelectPlan, isAuthenticated }) {
                   {/* CTA Button */}
                   <button
                     onClick={() => handleSelectPlan(plan.id)}
-                    className={`w-full py-3 rounded-lg font-bold transition-all ${
+                    className={`w-full py-3.5 rounded-xl font-bold transition-all duration-300 ${
                       plan.ctaStyle === 'solid'
-                        ? 'bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:shadow-lg transform hover:scale-105'
-                        : 'border-2 border-purple-600 text-purple-600 hover:bg-purple-50'
+                        ? 'bg-gradient-to-r from-purple-600 to-indigo-700 text-white hover:shadow-lg hover:shadow-purple-500/30 hover:scale-[1.02]'
+                        : 'border-2 border-purple-500 text-purple-600 hover:bg-purple-50'
                     }`}
                   >
                     {plan.cta}
                   </button>
 
                   {/* Features List */}
-                  <div className="mt-8 space-y-4">
+                  <div className="mt-8 space-y-3">
                     {plan.features.map((feature, idx) => (
                       <div key={idx} className="flex items-start space-x-3">
                         {feature.included ? (
-                          <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                          <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Check className="w-3 h-3 text-green-600" />
+                          </div>
                         ) : (
-                          <X className="w-5 h-5 text-gray-300 flex-shrink-0 mt-0.5" />
+                          <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <X className="w-3 h-3 text-gray-400" />
+                          </div>
                         )}
-                        <span className={feature.included ? 'text-gray-700' : 'text-gray-400'}>
+                        <span className={`text-sm ${feature.included ? 'text-gray-700' : 'text-gray-400'}`}>
                           {feature.text}
                         </span>
                       </div>
@@ -260,36 +265,39 @@ export default function PricingPage({ onBack, onSelectPlan, isAuthenticated }) {
         </div>
 
         {/* Enterprise Section */}
-        <div className="mt-16 bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 md:p-12 text-white">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-4">Enterprise Solutions</h2>
+        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-purple-900 rounded-3xl p-8 md:p-12 text-white mb-16 overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl" />
+          
+          <div className="relative max-w-4xl mx-auto text-center">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Enterprise Solutions</h2>
             <p className="text-gray-300 text-lg mb-8">
               Need unlimited analyses, API access, or custom integrations? 
               We offer tailored solutions for large medical device companies.
             </p>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-              <div className="flex flex-col items-center">
-                <FileText className="w-8 h-8 text-purple-400 mb-2" />
-                <span className="text-sm">Unlimited Analyses</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <Shield className="w-8 h-8 text-purple-400 mb-2" />
-                <span className="text-sm">API Access</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <Users className="w-8 h-8 text-purple-400 mb-2" />
-                <span className="text-sm">Team Management</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <Headphones className="w-8 h-8 text-purple-400 mb-2" />
-                <span className="text-sm">Dedicated Support</span>
-              </div>
+              {[
+                { icon: FileText, label: 'Unlimited Analyses' },
+                { icon: Shield, label: 'API Access' },
+                { icon: Users, label: 'Team Management' },
+                { icon: Headphones, label: 'Dedicated Support' },
+              ].map((item, idx) => {
+                const Icon = item.icon;
+                return (
+                  <div key={idx} className="flex flex-col items-center">
+                    <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center mb-3">
+                      <Icon className="w-6 h-6 text-purple-300" />
+                    </div>
+                    <span className="text-sm text-gray-300">{item.label}</span>
+                  </div>
+                );
+              })}
             </div>
 
             <button
               onClick={() => handleSelectPlan('enterprise')}
-              className="px-8 py-4 bg-white text-gray-900 rounded-xl font-bold text-lg hover:shadow-xl transition-all transform hover:scale-105"
+              className="px-8 py-4 bg-white text-gray-900 rounded-xl font-bold text-lg hover:shadow-2xl transition-all hover:scale-105"
             >
               Contact Enterprise Sales
             </button>
@@ -297,69 +305,40 @@ export default function PricingPage({ onBack, onSelectPlan, isAuthenticated }) {
         </div>
 
         {/* FAQ Section */}
-        <div className="mt-16 max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
+        <div className="max-w-3xl mx-auto mb-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-8">
             Frequently Asked Questions
           </h2>
           
-          <div className="space-y-6">
-            <div className="bg-white rounded-xl p-6 shadow">
-              <h3 className="font-bold text-gray-900 mb-2">
-                What counts as one document analysis?
-              </h3>
-              <p className="text-gray-600">
-                Each PDF upload or Profile Builder submission counts as one analysis. 
-                You'll receive a comprehensive compliance report for each analysis.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 shadow">
-              <h3 className="font-bold text-gray-900 mb-2">
-                Can I upgrade or downgrade my plan?
-              </h3>
-              <p className="text-gray-600">
-                Yes! You can change your plan at any time. When upgrading, you'll get 
-                immediate access to new features. When downgrading, changes take effect 
-                at your next billing cycle.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 shadow">
-              <h3 className="font-bold text-gray-900 mb-2">
-                Do unused analyses roll over?
-              </h3>
-              <p className="text-gray-600">
-                Monthly analyses don't roll over, but you can purchase additional 
-                analysis credits at any time at a discounted rate.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 shadow">
-              <h3 className="font-bold text-gray-900 mb-2">
-                Is my data secure?
-              </h3>
-              <p className="text-gray-600">
-                Absolutely. We use bank-level encryption, and your documents are 
-                processed securely and deleted after analysis. We never share your 
-                data with third parties.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 shadow">
-              <h3 className="font-bold text-gray-900 mb-2">
-                What payment methods do you accept?
-              </h3>
-              <p className="text-gray-600">
-                We accept all major credit cards (Visa, MasterCard, American Express) 
-                and can arrange invoicing for Enterprise customers.
-              </p>
-            </div>
+          <div className="space-y-4">
+            {faqs.map((faq, idx) => (
+              <div key={idx} className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <button
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  className="w-full px-6 py-5 text-left flex items-center justify-between"
+                >
+                  <h3 className="font-bold text-gray-900 pr-4">{faq.question}</h3>
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${openFaq === idx ? 'bg-purple-100' : 'bg-gray-100'}`}>
+                    {openFaq === idx ? (
+                      <ChevronUp className="w-5 h-5 text-purple-600" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5 text-gray-500" />
+                    )}
+                  </div>
+                </button>
+                {openFaq === idx && (
+                  <div className="px-6 pb-5">
+                    <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Money Back Guarantee */}
-        <div className="mt-16 text-center pb-8">
-          <div className="inline-flex items-center space-x-2 bg-green-50 text-green-700 px-6 py-3 rounded-full">
+        <div className="text-center pb-8">
+          <div className="inline-flex items-center space-x-2 bg-green-50 text-green-700 px-6 py-3 rounded-full border border-green-200">
             <Shield className="w-5 h-5" />
             <span className="font-semibold">30-Day Money-Back Guarantee</span>
           </div>

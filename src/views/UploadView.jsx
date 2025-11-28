@@ -73,7 +73,7 @@ export default function UploadView({ onAnalyze, onGoToProfile }) {
                   : 'bg-gray-400 cursor-not-allowed'
               }`}
             >
-              <span>🔍</span>
+              <span/><span/>
               <span>Analyze Document</span>
             </button>
 

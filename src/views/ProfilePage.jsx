@@ -1,6 +1,6 @@
 // src/views/ProfilePage.jsx
 import React, { useState } from 'react';
-import { User, Mail, Building, Calendar, ArrowLeft, Save, CheckCircle, AlertCircle } from 'lucide-react';
+import { User, Mail, Building, Calendar, ArrowLeft, Save, CheckCircle, AlertCircle, Shield, Edit3 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function ProfilePage({ onBack }) {
@@ -22,10 +22,7 @@ export default function ProfilePage({ onBack }) {
     setMessage({ type: '', text: '' });
 
     try {
-      // API call to update user profile would go here
-      // For now, just simulate success
       await new Promise(resolve => setTimeout(resolve, 500));
-      
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
       setIsEditing(false);
     } catch (error) {
@@ -36,15 +33,11 @@ export default function ProfilePage({ onBack }) {
   };
 
   const handleCancel = () => {
-    setFormData({
-      name: user?.name || '',
-      company: user?.company || ''
-    });
+    setFormData({ name: user?.name || '', company: user?.company || '' });
     setIsEditing(false);
     setMessage({ type: '', text: '' });
   };
 
-  // Format date nicely
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     try {
@@ -59,40 +52,43 @@ export default function ProfilePage({ onBack }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-8">
       <div className="max-w-2xl mx-auto px-4">
         {/* Back Button */}
         <button
           onClick={onBack}
-          className="flex items-center space-x-2 text-gray-600 hover:text-purple-600 mb-6 transition"
+          className="group flex items-center space-x-2 text-gray-600 hover:text-purple-600 mb-6 transition-colors"
         >
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back to Dashboard</span>
+          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+          <span className="font-medium">Back to Dashboard</span>
         </button>
 
         {/* Profile Card */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-xl shadow-purple-500/5 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-purple-600 to-purple-800 px-6 py-8">
+          <div className="bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-700 px-6 py-8 md:px-8 md:py-10">
             <div className="flex items-center space-x-4">
-              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center">
+              <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
                 <User className="w-10 h-10 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">{user?.name}</h1>
-                <p className="text-purple-200">{user?.email}</p>
+                <h1 className="text-2xl font-bold text-white">{user?.name || 'User'}</h1>
+                <p className="text-purple-200">{user?.email || 'email@example.com'}</p>
+                {user?.company && (
+                  <span className="inline-block mt-2 text-xs bg-white/20 text-white px-3 py-1 rounded-full">
+                    {user.company}
+                  </span>
+                )}
               </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-6">
+          <div className="p-6 md:p-8">
             {/* Status Messages */}
             {message.text && (
-              <div className={`mb-6 p-4 rounded-lg flex items-start space-x-3 ${
-                message.type === 'success' 
-                  ? 'bg-green-50 border border-green-200' 
-                  : 'bg-red-50 border border-red-200'
+              <div className={`mb-6 p-4 rounded-xl flex items-start space-x-3 animate-fade-in ${
+                message.type === 'success' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
               }`}>
                 {message.type === 'success' 
                   ? <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
@@ -108,11 +104,9 @@ export default function ProfilePage({ onBack }) {
             <div className="space-y-6">
               {/* Name */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  <div className="flex items-center space-x-2">
-                    <User className="w-4 h-4" />
-                    <span>Full Name</span>
-                  </div>
+                <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700 mb-2">
+                  <User className="w-4 h-4" />
+                  <span>Full Name</span>
                 </label>
                 {isEditing ? (
                   <input
@@ -120,36 +114,34 @@ export default function ProfilePage({ onBack }) {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent focus:bg-white transition-all"
                   />
                 ) : (
-                  <p className="text-gray-900 bg-gray-50 px-4 py-3 rounded-lg">
-                    {user?.name}
-                  </p>
+                  <p className="text-gray-900 bg-gray-50 px-4 py-3 rounded-xl">{user?.name || 'Not set'}</p>
                 )}
               </div>
 
               {/* Email (Read-only) */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  <div className="flex items-center space-x-2">
-                    <Mail className="w-4 h-4" />
-                    <span>Email Address</span>
-                  </div>
+                <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700 mb-2">
+                  <Mail className="w-4 h-4" />
+                  <span>Email Address</span>
                 </label>
-                <p className="text-gray-900 bg-gray-100 px-4 py-3 rounded-lg">
-                  {user?.email}
-                  <span className="text-xs text-gray-500 ml-2">(cannot be changed)</span>
-                </p>
+                <div className="relative">
+                  <p className="text-gray-900 bg-gray-100 px-4 py-3 rounded-xl pr-32">
+                    {user?.email || 'Not set'}
+                  </p>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 bg-gray-200 px-2 py-1 rounded">
+                    Cannot change
+                  </span>
+                </div>
               </div>
 
               {/* Company */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  <div className="flex items-center space-x-2">
-                    <Building className="w-4 h-4" />
-                    <span>Company</span>
-                  </div>
+                <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700 mb-2">
+                  <Building className="w-4 h-4" />
+                  <span>Company</span>
                 </label>
                 {isEditing ? (
                   <input
@@ -158,10 +150,10 @@ export default function ProfilePage({ onBack }) {
                     value={formData.company}
                     onChange={handleChange}
                     placeholder="Enter your company name"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent focus:bg-white transition-all"
                   />
                 ) : (
-                  <p className="text-gray-900 bg-gray-50 px-4 py-3 rounded-lg">
+                  <p className="text-gray-900 bg-gray-50 px-4 py-3 rounded-xl">
                     {user?.company || <span className="text-gray-400">Not specified</span>}
                   </p>
                 )}
@@ -169,35 +161,33 @@ export default function ProfilePage({ onBack }) {
 
               {/* Member Since */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="w-4 h-4" />
-                    <span>Member Since</span>
-                  </div>
+                <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700 mb-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>Member Since</span>
                 </label>
-                <p className="text-gray-900 bg-gray-50 px-4 py-3 rounded-lg">
+                <p className="text-gray-900 bg-gray-50 px-4 py-3 rounded-xl">
                   {formatDate(user?.created_at)}
                 </p>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="mt-8 flex justify-end space-x-4">
+            <div className="mt-8 flex justify-end space-x-3">
               {isEditing ? (
                 <>
                   <button
                     onClick={handleCancel}
-                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                    className="px-6 py-2.5 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition font-medium"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className={`px-6 py-2 rounded-lg font-semibold text-white flex items-center space-x-2 ${
+                    className={`px-6 py-2.5 rounded-xl font-semibold text-white flex items-center space-x-2 transition-all ${
                       isSaving
                         ? 'bg-gray-400 cursor-not-allowed'
-                        : 'bg-purple-600 hover:bg-purple-700'
+                        : 'bg-gradient-to-r from-purple-600 to-indigo-700 hover:shadow-lg hover:shadow-purple-500/30'
                     }`}
                   >
                     {isSaving ? (
@@ -216,31 +206,43 @@ export default function ProfilePage({ onBack }) {
               ) : (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="px-6 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition"
+                  className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-700 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all flex items-center space-x-2"
                 >
-                  Edit Profile
+                  <Edit3 className="w-4 h-4" />
+                  <span>Edit Profile</span>
                 </button>
               )}
             </div>
           </div>
         </div>
 
-        {/* Account Info Card */}
+        {/* Account Status Card */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mt-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Account Status</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center space-x-2">
+            <Shield className="w-5 h-5 text-purple-600" />
+            <span>Account Status</span>
+          </h2>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className={`w-3 h-3 rounded-full ${user?.is_active ? 'bg-green-500' : 'bg-red-500'}`} />
-              <span className="text-gray-700">
-                {user?.is_active ? 'Active Account' : 'Inactive Account'}
+              <div className={`w-3 h-3 rounded-full ${user?.is_active !== false ? 'bg-green-500' : 'bg-red-500'}`} />
+              <span className="text-gray-700 font-medium">
+                {user?.is_active !== false ? 'Active Account' : 'Inactive Account'}
               </span>
             </div>
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
               ID: {user?.id?.slice(-8) || 'N/A'}
             </span>
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(-8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
+      `}</style>
     </div>
   );
 }
