@@ -5,10 +5,12 @@ import {
   Users, CreditCard, Play, Star, ChevronRight, Menu, X,
   Clock, Target
 } from 'lucide-react';
+import DemoModal from '../components/DemoModal';
 
 export default function WelcomePage({ onLogin, onRegister, onPricing }) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showDemo, setShowDemo] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -139,21 +141,42 @@ export default function WelcomePage({ onLogin, onRegister, onPricing }) {
 
           {/* Demo Preview */}
           <div className="max-w-4xl mx-auto animate-fade-in-up animation-delay-800">
-            <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-2 shadow-2xl">
+            <div 
+              className="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-2 shadow-2xl cursor-pointer group"
+              onClick={() => setShowDemo(true)}
+            >
               <div className="flex items-center space-x-2 px-4 py-2">
                 <div className="w-3 h-3 bg-red-500 rounded-full" />
                 <div className="w-3 h-3 bg-yellow-500 rounded-full" />
                 <div className="w-3 h-3 bg-green-500 rounded-full" />
               </div>
-              <div className="bg-gradient-to-br from-purple-600/20 to-indigo-600/20 rounded-2xl aspect-video flex items-center justify-center">
-                <button className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-white/30 transition group">
-                  <Play className="w-8 h-8 text-white ml-1 group-hover:scale-110 transition-transform" />
-                </button>
+              <div className="bg-gradient-to-br from-purple-600/20 to-indigo-600/20 rounded-2xl aspect-video flex items-center justify-center relative overflow-hidden">
+                {/* Preview content */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/50 to-indigo-900/50 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-white/30 group-hover:scale-110 transition-all duration-300">
+                      <Play className="w-8 h-8 text-white ml-1" />
+                    </div>
+                    <p className="text-white font-semibold text-lg">Watch Demo</p>
+                    <p className="text-purple-200 text-sm">See how RegComply AI works</p>
+                  </div>
+                </div>
+                
+                {/* Decorative elements */}
+                <div className="absolute top-4 left-4 w-32 h-8 bg-white/10 rounded-lg" />
+                <div className="absolute top-4 right-4 w-16 h-8 bg-purple-500/30 rounded-lg" />
+                <div className="absolute bottom-4 left-4 right-4 h-24 bg-white/5 rounded-xl" />
               </div>
             </div>
+            <p className="text-center text-gray-500 text-sm mt-4">
+              Click to see an interactive product walkthrough
+            </p>
           </div>
         </div>
       </div>
+
+      {/* Demo Modal */}
+      <DemoModal isOpen={showDemo} onClose={() => setShowDemo(false)} />
 
       {/* Features Section */}
       <section id="features" className="py-16 md:py-24 px-4 bg-white">
