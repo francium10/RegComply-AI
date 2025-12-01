@@ -11,6 +11,7 @@ import UploadView from './views/UploadView';
 import ProfileBuilder from './views/ProfileBuilder';
 import ResultsView from './views/ResultsView';
 import LoadingView from './views/LoadingView';
+import PredicateFinder from './views/PredicateFinder';
 import ChatWidget from './components/ChatWidget';
 import Footer from './components/Footer';
 import { analyzeDocument, analyzeProfile } from './services/api';
@@ -19,12 +20,11 @@ import { analyzeDocument, analyzeProfile } from './services/api';
 function AppContent() {
   const { isAuthenticated, loading } = useAuth();
   const [view, setView] = useState('upload');
-  const [authView, setAuthView] = useState('welcome'); // 'welcome', 'login', 'register', 'pricing'
+  const [authView, setAuthView] = useState('welcome');
   const [selectedFile, setSelectedFile] = useState(null);
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
 
-  // Show loading while checking auth
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -36,8 +36,7 @@ function AppContent() {
     );
   }
 
-  // ============ Auth Handlers ============
-
+  // Auth Handlers
   const handleGoToLogin = () => setAuthView('login');
   const handleGoToRegister = () => setAuthView('register');
   const handleGoToWelcome = () => setAuthView('welcome');
@@ -50,18 +49,14 @@ function AppContent() {
 
   const handleSelectPlan = (planId, billingCycle) => {
     console.log(`Selected plan: ${planId}, billing: ${billingCycle}`);
-    // For now, redirect to register
-    // Later, this will integrate with Stripe
     if (planId === 'enterprise') {
-      // Could open a contact form or mailto link
       window.location.href = 'mailto:sales@regcomply.ai?subject=Enterprise%20Inquiry';
     } else {
       setAuthView('register');
     }
   };
 
-  // ============ App Handlers ============
-
+  // App Handlers
   const handleAnalyze = async (file) => {
     setSelectedFile(file);
     setView('loading');
@@ -104,9 +99,7 @@ function AppContent() {
     setView('upload');
   };
 
-  // ============ Render ============
-
-  // Not authenticated - show auth pages
+  // Not authenticated
   if (!isAuthenticated) {
     if (authView === 'login') {
       return (
@@ -138,7 +131,6 @@ function AppContent() {
       );
     }
     
-    // Default: Welcome page
     return (
       <WelcomePage
         onLogin={handleGoToLogin}
@@ -148,7 +140,7 @@ function AppContent() {
     );
   }
 
-  // Authenticated - show main app
+  // Authenticated
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar onNavigate={handleNavigate} currentView={view} />
@@ -181,6 +173,12 @@ function AppContent() {
             isAuthenticated={true}
           />
         )}
+
+        {view === 'predicate-finder' && (
+          <PredicateFinder 
+            onBack={handleBackToUpload}
+          />
+        )}
         
         {view === 'loading' && <LoadingView />}
         
@@ -199,7 +197,6 @@ function AppContent() {
   );
 }
 
-// Root App Component with AuthProvider wrapper
 export default function App() {
   return (
     <AuthProvider>

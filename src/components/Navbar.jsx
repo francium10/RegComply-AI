@@ -1,6 +1,6 @@
 // src/components/Navbar.jsx
 import React, { useState, useEffect } from 'react';
-import { FileText, Shield, User, LogOut, ChevronDown, Settings, Home, CreditCard, Menu, X } from 'lucide-react';
+import { FileText, Shield, User, LogOut, ChevronDown, Settings, Home, CreditCard, Menu, X, Search } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function Navbar({ onNavigate, currentView }) {
@@ -9,25 +9,15 @@ export default function Navbar({ onNavigate, currentView }) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Track scroll for shadow effect
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    if (showMobileMenu) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
+    document.body.style.overflow = showMobileMenu ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
   }, [showMobileMenu]);
 
   const handleLogout = () => {
@@ -44,6 +34,7 @@ export default function Navbar({ onNavigate, currentView }) {
 
   const navLinks = [
     { label: 'Dashboard', view: 'upload', icon: Home },
+    { label: 'Predicate Finder', view: 'predicate-finder', icon: Search },
     { label: 'Pricing', view: 'pricing', icon: CreditCard },
   ];
 
@@ -82,7 +73,6 @@ export default function Navbar({ onNavigate, currentView }) {
 
             {/* Right Side */}
             <div className="flex items-center space-x-3">
-              {/* Product Tag - Hidden on mobile */}
               <div className="hidden lg:flex items-center space-x-2 text-purple-200 bg-white/10 px-3 py-1.5 rounded-full">
                 <Shield className="w-3.5 h-3.5" />
                 <span className="text-xs font-medium">510(k) Analyzer</span>
@@ -104,15 +94,10 @@ export default function Navbar({ onNavigate, currentView }) {
                     <ChevronDown className={`w-4 h-4 text-white/70 transition-transform duration-200 ${showDropdown ? 'rotate-180' : ''}`} />
                   </button>
 
-                  {/* Dropdown Menu */}
                   {showDropdown && (
                     <>
-                      <div 
-                        className="fixed inset-0 z-10" 
-                        onClick={() => setShowDropdown(false)}
-                      />
+                      <div className="fixed inset-0 z-10" onClick={() => setShowDropdown(false)} />
                       <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl shadow-purple-900/20 z-20 overflow-hidden border border-gray-100 animate-dropdown">
-                        {/* User Info Header */}
                         <div className="px-4 py-4 bg-gradient-to-r from-purple-50 to-indigo-50 border-b border-gray-100">
                           <p className="font-bold text-gray-900">{user.name}</p>
                           <p className="text-sm text-gray-500 truncate">{user.email}</p>
@@ -123,7 +108,6 @@ export default function Navbar({ onNavigate, currentView }) {
                           )}
                         </div>
                         
-                        {/* Menu Items */}
                         <div className="py-2">
                           <button
                             onClick={() => handleNavigation('upload')}
@@ -131,6 +115,13 @@ export default function Navbar({ onNavigate, currentView }) {
                           >
                             <Home className="w-4 h-4 text-gray-400" />
                             <span>Dashboard</span>
+                          </button>
+                          <button
+                            onClick={() => handleNavigation('predicate-finder')}
+                            className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-3 transition"
+                          >
+                            <Search className="w-4 h-4 text-gray-400" />
+                            <span>Predicate Finder</span>
                           </button>
                           <button
                             onClick={() => handleNavigation('pricing')}
@@ -174,18 +165,15 @@ export default function Navbar({ onNavigate, currentView }) {
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu */}
       {showMobileMenu && (
         <div className="fixed inset-0 z-50 md:hidden">
-          {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in"
             onClick={() => setShowMobileMenu(false)}
           />
           
-          {/* Slide-in Panel */}
           <div className="absolute top-0 right-0 w-[280px] h-full bg-white shadow-2xl animate-slide-in-right">
-            {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-gradient-to-r from-purple-600 to-indigo-700">
               <div className="flex items-center space-x-2 text-white">
                 <FileText className="w-5 h-5" />
@@ -200,7 +188,6 @@ export default function Navbar({ onNavigate, currentView }) {
               </button>
             </div>
 
-            {/* User Info */}
             {isAuthenticated && user && (
               <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border-b border-gray-100">
                 <div className="flex items-center space-x-3">
@@ -215,7 +202,6 @@ export default function Navbar({ onNavigate, currentView }) {
               </div>
             )}
 
-            {/* Navigation Links */}
             <div className="py-4">
               {navLinks.map((link) => {
                 const Icon = link.icon;
@@ -262,7 +248,6 @@ export default function Navbar({ onNavigate, currentView }) {
               )}
             </div>
 
-            {/* Footer */}
             <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 bg-gray-50">
               <div className="flex items-center justify-center space-x-2 text-gray-400">
                 <Shield className="w-4 h-4" />
@@ -278,23 +263,17 @@ export default function Navbar({ onNavigate, currentView }) {
           from { opacity: 0; transform: translateY(-8px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        .animate-dropdown {
-          animation: dropdown 0.2s ease-out forwards;
-        }
+        .animate-dropdown { animation: dropdown 0.2s ease-out forwards; }
         @keyframes fade-in {
           from { opacity: 0; }
           to { opacity: 1; }
         }
-        .animate-fade-in {
-          animation: fade-in 0.2s ease-out forwards;
-        }
+        .animate-fade-in { animation: fade-in 0.2s ease-out forwards; }
         @keyframes slide-in-right {
           from { transform: translateX(100%); }
           to { transform: translateX(0); }
         }
-        .animate-slide-in-right {
-          animation: slide-in-right 0.3s ease-out forwards;
-        }
+        .animate-slide-in-right { animation: slide-in-right 0.3s ease-out forwards; }
       `}</style>
     </>
   );
