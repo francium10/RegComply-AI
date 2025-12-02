@@ -148,17 +148,19 @@ export default function ChatWidget() {
           )}
         </button>
 
-        {/* Chat Container */}
-        <div className={`absolute transition-all duration-300 ease-out ${
+        {/* Chat Container - FIXED MOBILE */}
+        <div className={`transition-all duration-300 ease-out ${
           isOpen 
             ? 'opacity-100 translate-y-0 pointer-events-auto' 
             : 'opacity-0 translate-y-4 pointer-events-none'
         } ${
           isMinimized 
-            ? 'bottom-20 right-0 w-72 h-14' 
-            : 'bottom-0 right-0 md:bottom-20 md:right-0 fixed md:absolute inset-0 md:inset-auto md:w-[420px] md:h-[600px] md:max-h-[80vh]'
-        }`}>
-          <div className={`bg-white md:rounded-2xl shadow-2xl flex flex-col overflow-hidden h-full ${isMinimized ? 'rounded-xl' : 'md:rounded-2xl'}`}>
+            ? 'absolute bottom-20 right-0 w-72 h-14' 
+            : 'fixed md:absolute inset-0 md:inset-auto md:bottom-20 md:right-0 md:w-[420px] md:h-[600px] md:max-h-[80vh] bottom-0 left-0 right-0 top-0'
+        } z-50`}>
+          <div className={`bg-white shadow-2xl flex flex-col overflow-hidden h-full safe-area-bottom ${
+            isMinimized ? 'rounded-xl' : 'md:rounded-2xl'
+          }`}>
             {/* Header */}
             <div className="bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-700 text-white p-4 md:p-5 flex justify-between items-center flex-shrink-0">
               <div className="flex items-center space-x-3">
@@ -221,7 +223,10 @@ export default function ChatWidget() {
                               : 'bg-white text-gray-800 border border-gray-100 shadow-sm rounded-bl-md'
                           }`}
                         >
-                          <p className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: msg.text }} />
+                          <div 
+                            className="whitespace-pre-wrap break-words" 
+                            dangerouslySetInnerHTML={{ __html: msg.text }} 
+                          />
                         </div>
                         <p className={`text-[10px] text-gray-400 mt-1 px-1 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
                           {formatTime(msg.timestamp)}

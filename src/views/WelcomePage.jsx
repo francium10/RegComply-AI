@@ -6,6 +6,7 @@ import {
   Clock, Target
 } from 'lucide-react';
 import DemoModal from '../components/DemoModal';
+import '../styles/animations.css';
 
 export default function WelcomePage({ onLogin, onRegister, onPricing }) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -347,26 +348,6 @@ export default function WelcomePage({ onLogin, onRegister, onPricing }) {
         </div>
       </footer>
 
-      <style jsx>{`
-        @keyframes blob {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-        }
-        .animate-blob { animation: blob 7s infinite; }
-        .animation-delay-2000 { animation-delay: 2s; }
-        .animation-delay-4000 { animation-delay: 4s; }
-        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-in { animation: fade-in 0.6s ease-out forwards; }
-        .animate-fade-in-up { animation: fade-in-up 0.6s ease-out forwards; }
-        .animation-delay-200 { animation-delay: 0.2s; opacity: 0; }
-        .animation-delay-400 { animation-delay: 0.4s; opacity: 0; }
-        .animation-delay-600 { animation-delay: 0.6s; opacity: 0; }
-        .animation-delay-800 { animation-delay: 0.8s; opacity: 0; }
-        @keyframes slide-in { from { transform: translateX(100%); } to { transform: translateX(0); } }
-        .animate-slide-in { animation: slide-in 0.3s ease-out forwards; }
-      `}</style>
     </div>
   );
 }
