@@ -35,7 +35,7 @@ export default function Navbar({ onNavigate, currentView }) {
   const navLinks = [
     { label: 'Dashboard', view: 'upload', icon: Home },
     { label: 'Predicate Finder', view: 'predicate-finder', icon: Search },
-    { label: 'Pricing', view: 'pricing', icon: CreditCard },
+
   ];
 
   return (
@@ -44,7 +44,7 @@ export default function Navbar({ onNavigate, currentView }) {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-16 md:h-18">
             {/* Logo */}
-            <button 
+            <button
               onClick={() => handleNavigation('upload')}
               className="flex items-center space-x-2.5 text-white font-bold hover:opacity-90 transition group"
             >
@@ -60,11 +60,10 @@ export default function Navbar({ onNavigate, currentView }) {
                 <button
                   key={link.view}
                   onClick={() => handleNavigation(link.view)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    currentView === link.view
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${currentView === link.view
                       ? 'bg-white/20 text-white'
                       : 'text-white/80 hover:text-white hover:bg-white/10'
-                  }`}
+                    }`}
                 >
                   {link.label}
                 </button>
@@ -107,7 +106,7 @@ export default function Navbar({ onNavigate, currentView }) {
                             </span>
                           )}
                         </div>
-                        
+
                         <div className="py-2">
                           <button
                             onClick={() => handleNavigation('upload')}
@@ -123,13 +122,7 @@ export default function Navbar({ onNavigate, currentView }) {
                             <Search className="w-4 h-4 text-gray-400" />
                             <span>Predicate Finder</span>
                           </button>
-                          <button
-                            onClick={() => handleNavigation('pricing')}
-                            className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-3 transition"
-                          >
-                            <CreditCard className="w-4 h-4 text-gray-400" />
-                            <span>Pricing & Plans</span>
-                          </button>
+
                           <button
                             onClick={() => handleNavigation('profile-page')}
                             className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-3 transition"
@@ -168,11 +161,11 @@ export default function Navbar({ onNavigate, currentView }) {
       {/* Mobile Menu */}
       {showMobileMenu && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div 
+          <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in"
             onClick={() => setShowMobileMenu(false)}
           />
-          
+
           <div className="absolute top-0 right-0 w-[280px] h-full bg-white shadow-2xl animate-slide-in-right">
             <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-gradient-to-r from-purple-600 to-indigo-700">
               <div className="flex items-center space-x-2 text-white">
@@ -209,11 +202,10 @@ export default function Navbar({ onNavigate, currentView }) {
                   <button
                     key={link.view}
                     onClick={() => handleNavigation(link.view)}
-                    className={`w-full px-5 py-3.5 text-left flex items-center space-x-3 transition ${
-                      currentView === link.view
+                    className={`w-full px-5 py-3.5 text-left flex items-center space-x-3 transition ${currentView === link.view
                         ? 'bg-purple-50 text-purple-700 border-r-4 border-purple-600'
                         : 'text-gray-700 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
                     <Icon className="w-5 h-5" />
                     <span className="font-medium">{link.label}</span>
@@ -225,11 +217,10 @@ export default function Navbar({ onNavigate, currentView }) {
                 <>
                   <button
                     onClick={() => handleNavigation('profile-page')}
-                    className={`w-full px-5 py-3.5 text-left flex items-center space-x-3 transition ${
-                      currentView === 'profile-page'
+                    className={`w-full px-5 py-3.5 text-left flex items-center space-x-3 transition ${currentView === 'profile-page'
                         ? 'bg-purple-50 text-purple-700 border-r-4 border-purple-600'
                         : 'text-gray-700 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
                     <Settings className="w-5 h-5" />
                     <span className="font-medium">Account Settings</span>
